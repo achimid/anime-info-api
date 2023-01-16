@@ -1,0 +1,14 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Telegram Notify Bot API",
+    "description": "API criada utilizando a lib npm `node-telegram-bot-api`(https://www.npmjs.com/package/node-telegram-bot-api). Com o objetivo de disponibilizar os recursos por meio de API REST.",
+    "version": "1.0.0"
+  },
+  "host": "telegram-notify-api.achimid.com.br",
+  "basePath": "/api/v1",
+  "schemes": [
+    "https"
+  ],
+  "paths": {}
+}
