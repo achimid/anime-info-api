@@ -22,6 +22,8 @@
     "express": "^4.18.2",
     "http-status-codes": "^2.2.0",
     "mongoose": "^6.7.3",
+    "node-fetch": "^2.6.12",
+    "string-similarity": "^4.0.4",
     "swagger-ui-express": "^4.6.0"
   },
   "devDependencies": {

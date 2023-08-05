@@ -1,14 +1,10 @@
 const mongoose = require('mongoose')
 
 const schema = mongoose.Schema({    
-    slug_name: {
-        type: String,
-        required: true,
-        unique : true
-    },
     name: {
         type: String,
         required: true,
+        unique : true
     },
     names: {
         type: [{ type: String }],
@@ -26,10 +22,6 @@ const schema = mongoose.Schema({
         type: String,
         required: false
     },
-    images: {
-        type: [{ type: String }],
-        default: undefined
-    },
     description: {
         type: String,
         required: false
@@ -42,6 +34,6 @@ const schema = mongoose.Schema({
         type: [{ type: Object }],
         default: undefined
     }    
-}, { versionKey: false, timestamps: true })
+}, { timestamps: true })
 
-module.exports = mongoose.model('animes', schema)
+module.exports = mongoose.model('anime', schema)
