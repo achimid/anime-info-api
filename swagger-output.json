@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Anime Info API",
-    "description": "Serviço para export informações de animes originadas de diversas fontes em uma API REST web.",
+    "description": "API de informações de anime. Baseado em diversas fontes de informação na internet.",
     "version": "1.0.0"
   },
   "host": "anime-info-api.achimid.com.br",
@@ -10,5 +10,61 @@
   "schemes": [
     "https"
   ],
-  "paths": {}
+  "paths": {
+    "/api/v1/": {
+      "get": {
+        "tags": [
+          "Health Check"
+        ],
+        "summary": "Endpoint para consultar o status da aplicação",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/anime/{id}": {
+      "get": {
+        "tags": [
+          "Anime"
+        ],
+        "summary": "Recuperar informações de um anime pelo ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/v1/search/list/names": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Listagem de todos os nomes de animes",
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/api/v1/search/": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Busca de animes. (Query, Nome, Similaridade, Aproximação)",
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    }
+  }
 }

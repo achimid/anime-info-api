@@ -4,12 +4,12 @@ const crypto = require('crypto')
 const cacheSearch = {}
 const scriptExtractor = `
     info = { 
-        title: document.querySelector('.title-name').innerText,    
-        title_english: document.querySelector('.title-english').innerText,
-        image: document.querySelector('.lazyloaded').getAttribute('data-src'), 
+        title: document.querySelector('.title-name')?.innerText,    
+        title_english: document.querySelector('.title-english')?.innerText,
+        image: document.querySelector('.lazyloaded')?.getAttribute('data-src'), 
         url: window.location.href,
-        score: document.querySelector('.score-label').innerText,
-        description: document.querySelector('[itemprop*="description"]').innerText,
+        score: document.querySelector('.score-label')?.innerText,
+        description: document.querySelector('[itemprop*="description"]')?.innerText,
         titles: [...document.querySelectorAll('.js-alternative-titles .spaceit_pad')].map(e => e.innerText.split(':').slice(1).join(':').replace('\\n', '').trim())
     };
 

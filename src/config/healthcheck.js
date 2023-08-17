@@ -1,7 +1,11 @@
 const router = require('express').Router()
 
 
-// Health Check Endpoint
-router.get('/', async (req, res) => { res.json({status: 'ok'}) })
+router.get('/', async (req, res) => { 
+    // #swagger.tags = ['Health Check']
+	// #swagger.summary = 'Endpoint para consultar o status da aplicação'
+
+    res.json({status: 'ok'}) 
+})
 
 module.exports = router

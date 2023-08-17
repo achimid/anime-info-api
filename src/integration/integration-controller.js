@@ -3,15 +3,18 @@ const router = require('express').Router()
 const clientMAL = require('./client-mal')
 
 router.get('/callback', async (req, res) => {
+    // #swagger.ignore = true
     res.send()
 })
 
 router.post('/callback/mal/anime/info', async (req, res) => {
+    // #swagger.ignore = true
     res.send()
     proccessCallbackBody(req.body, clientMAL.onAnimeInfo)
 })
 
 router.post('/callback/mal/search', async (req, res) => {
+    // #swagger.ignore = true
     res.send()
     proccessCallbackBody(req.body, clientMAL.onSearchComplete)
 })

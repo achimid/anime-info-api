@@ -1,5 +1,6 @@
 const repository = require('./anime-repository')
 const integrationService = require('../integration/integration-service')
+const telegeram = require('../config/telegram')
 const { searchSimilarityName, searchStrategySimple } = require('./search-service')
 
 
@@ -51,6 +52,8 @@ const findOrCreateFromBestMatch = async (query, bestMatchs) => {
         image: mal?.image || jikan?.images?.webp?.image_url || jikan?.images?.jpg?.image_url || atc?.image,
         description: mal?.description || jikan?.synopsis || atc?.description,
     }
+
+    telegeram.send(`Termo de busca não encontrado: (${query}) => (${anime.name})`)
 
     const animesFound = await repository.queryByNames(anime.name)
     const bestMatchsDB = searchStrategySimple(anime.name, animesFound, (a) => a.name)    
