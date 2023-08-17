@@ -1,12 +1,16 @@
 const mongoose = require('mongoose')
 
-const schema = mongoose.Schema({    
+const schema = mongoose.Schema({
     name: {
         type: String,
         required: true,
-        unique : true
+        unique: true
     },
     names: {
+        type: [{ type: String }],
+        default: undefined
+    },
+    synonyms: {
         type: [{ type: String }],
         default: undefined
     },
@@ -28,12 +32,13 @@ const schema = mongoose.Schema({
     },
     source: {
         mal: { type: Object },
+        jikan: { type: Object },
         atc: { type: Object }
     },
     extra: {
         type: [{ type: Object }],
         default: undefined
-    }    
+    }
 }, { timestamps: true })
 
 module.exports = mongoose.model('anime', schema)
