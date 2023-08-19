@@ -23,7 +23,8 @@ const search = async (query = '') => {
         }
     }
     
-    return findOrCreateFromBestMatch(query, await integrationService.findBestMatch(query))
+    const resultBestMatch = await findOrCreateFromBestMatch(query, await integrationService.findBestMatch(query))
+    return [resultBestMatch]
 }
 
 const improveFutureSearchName = async (animesBestMatchFound, possibleName) => {
