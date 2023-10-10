@@ -9,7 +9,7 @@ const listAllNames = () => repository.listAllNames()
 
 const search = async (query) => {
 
-    integrationService.process(query)
+    // integrationService.process(query)
     
     const animesFound = await repository.queryByNames(query)
     if(animesFound.length > 0 ) return animesFound

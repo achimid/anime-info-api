@@ -4,7 +4,11 @@ const allNames = new Set()
 
 const findById = (id) => Anime.findById(id)
 
+const findAll = () => Anime.find()
+
 const listAllNames = () => Anime.find().select('_id, name').sort({name: 1}).lean()
+
+const findByName = (name) => Anime.find({name})
 
 const queryByNames = async (query) => {
     const animes = await Anime.find({$or: [
@@ -33,8 +37,8 @@ const create = (anime) => {
 }
 
 const update = (anime) => {
-    anime.names.map(name => allNames.add(name.toUpperCase()))
-    anime.synonyms.map(name => allNames.add(name.toUpperCase()))
+    anime.names.map(name => allNames.add(name.trim().toUpperCase()))
+    anime.synonyms.map(name => allNames.add(name.trim().toUpperCase()))
 
     return anime.save()
 }
@@ -59,7 +63,9 @@ const getAllNames = () => allNames
 module.exports = {
     create,
     update,
-    findById,
+    findAll,
+    findById,    
+    findByName,
     getAllNames,
     listAllNames,
     queryByNames,
