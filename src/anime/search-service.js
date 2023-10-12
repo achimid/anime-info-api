@@ -1,6 +1,6 @@
 const repository = require('./anime-repository')
 const stringSimilarity = require('string-similarity')
-const integrationService = require('../integration/integration-service')
+// const integrationService = require('../integration/integration-service')
 
 
 const findById = (id) => repository.findById(id)
@@ -10,16 +10,16 @@ const listAllNames = () => repository.listAllNames()
 const search = async (query) => {
 
     // integrationService.process(query)
-    
+
     const animesFound = await repository.queryByNames(query)
-    if(animesFound.length > 0 ) return animesFound
-    
+    if (animesFound.length > 0) return animesFound
+
     const bestMatchs = searchSimilarityName(query, [...repository.getAllNames()])
-    
-    if(bestMatchs.length == 0 ) return []
+
+    if (bestMatchs.length == 0) return []
 
     const animesBestMatchFound = await repository.queryByNames(bestMatchs[0].possibility)
-    if(animesBestMatchFound.length > 0 ) {
+    if (animesBestMatchFound.length > 0) {
         improveFutureSearchName(animesBestMatchFound, query)
         return animesBestMatchFound
     }
@@ -32,18 +32,18 @@ const improveFutureSearchName = async (animesBestMatchFound, possibleName) => {
         const { _id } = animesBestMatchFound[i];
 
         const anime = await repository.findById(_id)
-                
+
         anime.names.push(possibleName)
         console.log(possibleName, anime.name)
-        
+
         // await repository.update(anime)        
-    }    
+    }
 }
 
 const searchSimilarityName = (text, possibilities = []) => {
 
     const simpleStrategy = searchStrategySimple(text, possibilities)
-    
+
     if (simpleStrategy.length > 0) return simpleStrategy
 
 
@@ -70,18 +70,18 @@ const searchStrategySimple = (text = '', possibilities = [], fn = (s) => s) => {
         const similarity = stringSimilarity.compareTwoStrings(text.toUpperCase(), fn(possibility).toUpperCase())
         return { similarity, possibility }
     })
-    
+
     similarities.sort((a, b) => {
         if (a.similarity < b.similarity) return 1;
         if (a.similarity > b.similarity) return -1;
         return 0;
     })
-    
+
     // const similarityLog = similarities[0].similarity
     // const possibilityLog = fn(similarities[0].possibility)
     // console.log({ similarityLog, possibilityLog })    
 
-    return similarities.filter(({ possibility, similarity }) => {        
+    return similarities.filter(({ possibility, similarity }) => {
         if (text.length <= 5 && possibility.length <= 5) {
             return similarity >= 0.60
         } else if (text.length <= 10 && possibility.length <= 10) {
@@ -90,7 +90,7 @@ const searchStrategySimple = (text = '', possibilities = [], fn = (s) => s) => {
             return similarity >= 0.75
         } else {
             return similarity >= 0.80
-        }        
+        }
     })
 }
 const searchStrategySplitDoubleDot = (text, possibilities = []) => {

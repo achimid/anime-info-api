@@ -1,5 +1,5 @@
 const repository = require('./anime-repository')
-const integrationService = require('../integration/integration-service')
+// const integrationService = require('../integration/integration-service')
 const telegeram = require('../config/telegram')
 const { searchSimilarityName, searchStrategySimple } = require('./search-service')
 
@@ -22,9 +22,11 @@ const search = async (query = '') => {
             return animesBestMatchFound
         }
     }
-    
-    const resultBestMatch = await findOrCreateFromBestMatch(query, await integrationService.findBestMatch(query))
-    return [resultBestMatch]
+
+    return []
+
+    // const resultBestMatch = await findOrCreateFromBestMatch(query, await integrationService.findBestMatch(query))
+    // return [resultBestMatch]
 }
 
 const improveFutureSearchName = async (animesBestMatchFound, possibleName) => {
@@ -32,7 +34,7 @@ const improveFutureSearchName = async (animesBestMatchFound, possibleName) => {
         const { _id } = animesBestMatchFound[i];
 
         const anime = await repository.findById(_id)
-        
+
         anime.synonyms = [...new Set([...(anime.synonyms || []), possibleName])]
         console.log(possibleName, anime.name)
 
@@ -57,20 +59,20 @@ const findOrCreateFromBestMatch = async (query, bestMatchs) => {
     telegeram.send(`Termo de busca não encontrado: (${query}) => (${anime.name})`)
 
     const animesFound = await repository.queryByNames(anime.name)
-    const bestMatchsDB = searchStrategySimple(anime.name, animesFound, (a) => a.name)    
+    const bestMatchsDB = searchStrategySimple(anime.name, animesFound, (a) => a.name)
 
     if (bestMatchsDB.length > 0 && bestMatchsDB[0].similarity >= 0.95) {
         const animeFounded = bestMatchsDB[0].possibility
         animeFounded.synonyms = [...new Set([...(animeFounded.synonyms || []), query])]
-        
+
         repository.update(animeFounded).catch(console.error)
 
         return animeFounded
     } else {
         repository.create(anime).catch(console.error)
-        
+
         return anime
-    }    
+    }
 }
 
 

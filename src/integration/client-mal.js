@@ -32,23 +32,23 @@ const extract = (body) => {
     fetch(process.env.PUPPETEER_EXECUTOR_URL, {
         method: 'POST',
         body: JSON.stringify(body),
-        headers: {'Content-Type': 'application/json'}
+        headers: { 'Content-Type': 'application/json' }
     })
-    .then(res => res.json())
-    .then(json => console.log('Extração adicionada a fila ', json.id))
+        .then(res => res.json())
+        .then(json => console.log('Extração adicionada a fila ', json.id))
 }
 
-const onSearchComplete = ({ execution, request}) => {
+const onSearchComplete = ({ execution, request }) => {
     const links = execution.result
     links.slice(0, 1).map(link => extract({
         "url": link,
         "script": scriptExtractor,
-        "callbackUrl": process.env.ANIME_INFO_URL + "/api/v1/integration/callback/mal/anime/info",        
+        "callbackUrl": process.env.ANIME_INFO_URL + "/api/v1/integration/callback/mal/anime/info",
         "ref": request.ref
     }))
 }
 
-const onAnimeInfo = ({ execution, request}) => {
+const onAnimeInfo = ({ execution, request }) => {
     const info = execution.result
     const ref = request.ref
 
@@ -57,7 +57,7 @@ const onAnimeInfo = ({ execution, request}) => {
 
 const parseInfo = (anime) => {
     return {
-        ...anime,        
+        ...anime,
         titles: [...new Set([anime.title, anime.title.replace(/[']/g, ''), anime.title_english, , ...(anime.titles || []).map(s => s.title)])].filter(s => s)
     }
 }
@@ -65,5 +65,5 @@ const parseInfo = (anime) => {
 module.exports = {
     search,
     onAnimeInfo,
-    onSearchComplete,    
+    onSearchComplete,
 }
