@@ -1,5 +1,5 @@
 const repository = require('./anime-repository')
-// const integrationService = require('../integration/integration-service')
+const integrationService = require('../integration/integration-service')
 const telegeram = require('../config/telegram')
 const { searchSimilarityName, searchStrategySimple } = require('./search-service')
 
@@ -9,9 +9,13 @@ const findById = (id) => repository.findById(id)
 const listAllNames = () => repository.listAllNames()
 
 const search = async (query = '') => {
+   
 
     const animesFound = await repository.queryByNames(query)
     if (animesFound.length > 0) return animesFound
+
+    const animesFoundSynonyms = await repository.queryBySynonyms(query)
+    if (animesFoundSynonyms.length > 0) return animesFoundSynonyms
 
     const bestMatchs = searchSimilarityName(query, [...repository.getAllNames()])
 
@@ -22,11 +26,9 @@ const search = async (query = '') => {
             return animesBestMatchFound
         }
     }
-
-    return []
-
-    // const resultBestMatch = await findOrCreateFromBestMatch(query, await integrationService.findBestMatch(query))
-    // return [resultBestMatch]
+    
+    const resultBestMatch = await findOrCreateFromBestMatch(query, await integrationService.findBestMatch(query))
+    return [resultBestMatch]
 }
 
 const improveFutureSearchName = async (animesBestMatchFound, possibleName) => {

@@ -9,13 +9,13 @@ const findBestMatch = async (query) => {
 
     const bastMatchs = await Promise.all(
         [
-            processMAL(query),
-            processATC(query),
+            // processMAL(query),
+            // processATC(query),
             processJikan(query),
         ]
     )
 
-    const [bestMatchMAL, bestMatchATC, bestMatchJikan] = bastMatchs
+    const [bestMatchJikan, bestMatchMAL, bestMatchATC] = bastMatchs
 
     // console.log(bestMatchJikan, bestMatchATC, bestMatchMAL)
 
@@ -49,5 +49,6 @@ const processMAL = async (query) => {
 }
 
 module.exports = {
-    findBestMatch
+    findBestMatch,
+    processJikan
 }
