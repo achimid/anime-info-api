@@ -50,5 +50,6 @@ const processMAL = async (query) => {
 
 module.exports = {
     findBestMatch,
-    processJikan
+    processJikan,
+    processMAL
 }

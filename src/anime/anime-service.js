@@ -28,7 +28,7 @@ const search = async (query = '') => {
     }
     
     const resultBestMatch = await findOrCreateFromBestMatch(query, await integrationService.findBestMatch(query))
-    return [resultBestMatch]
+    return [resultBestMatch].filter(s => s)
 }
 
 const improveFutureSearchName = async (animesBestMatchFound, possibleName) => {
@@ -40,12 +40,14 @@ const improveFutureSearchName = async (animesBestMatchFound, possibleName) => {
         anime.synonyms = [...new Set([...(anime.synonyms || []), possibleName])]
         console.log(possibleName, anime.name)
 
-        await repository.update(anime)
+        await repository.update(anime).catch(console.log)
     }
 }
 
 const findOrCreateFromBestMatch = async (query, bestMatchs) => {
     const { mal, atc, jikan } = bestMatchs
+
+    if (mal == undefined && atc == undefined && jikan == undefined) return
 
     const anime = {
         name: mal?.title || jikan?.title || atc?.name,
@@ -62,6 +64,7 @@ const findOrCreateFromBestMatch = async (query, bestMatchs) => {
 
     const animesFound = await repository.queryByNames(anime.name)
     const bestMatchsDB = searchStrategySimple(anime.name, animesFound, (a) => a.name)
+    const bestMatchsDBAndQuery = searchStrategySimple(query, animesFound, (a) => a.name)
 
     if (bestMatchsDB.length > 0 && bestMatchsDB[0].similarity >= 0.95) {
         const animeFounded = bestMatchsDB[0].possibility
@@ -71,9 +74,9 @@ const findOrCreateFromBestMatch = async (query, bestMatchs) => {
 
         return animeFounded
     } else {
-        repository.create(anime).catch(console.error)
+        console.log('Match não encontrado... ', query)
 
-        return anime
+        return null
     }
 }
 
