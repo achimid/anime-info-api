@@ -1,7 +1,7 @@
 const repository = require('./anime-repository')
 const integrationService = require('../integration/integration-service')
 const telegeram = require('../config/telegram')
-const { searchSimilarityName, searchStrategySimple } = require('./search-service')
+const { searchSimilarityName, searchStrategySimple, sortBestMatch } = require('./search-service')
 
 
 const findById = (id) => repository.findById(id)
@@ -12,10 +12,10 @@ const search = async (query = '') => {
    
 
     const animesFound = await repository.queryByNames(query)
-    if (animesFound.length > 0) return animesFound
+    if (animesFound.length > 0) return sortBestMatch(query, animesFound)
 
-    const animesFoundSynonyms = await repository.queryBySynonyms(query)
-    if (animesFoundSynonyms.length > 0) return animesFoundSynonyms
+    // const animesFoundSynonyms = await repository.queryBySynonyms(query)
+    // if (animesFoundSynonyms.length > 0) return animesFoundSynonyms
 
     const bestMatchs = searchSimilarityName(query, [...repository.getAllNames()])
 
@@ -64,7 +64,7 @@ const findOrCreateFromBestMatch = async (query, bestMatchs) => {
 
     const animesFound = await repository.queryByNames(anime.name)
     const bestMatchsDB = searchStrategySimple(anime.name, animesFound, (a) => a.name)
-    const bestMatchsDBAndQuery = searchStrategySimple(query, animesFound, (a) => a.name)
+    const matchFromExternal = searchStrategySimple(query, [anime], (a) => a.name)
 
     if (bestMatchsDB.length > 0 && bestMatchsDB[0].similarity >= 0.95) {
         const animeFounded = bestMatchsDB[0].possibility
@@ -73,6 +73,11 @@ const findOrCreateFromBestMatch = async (query, bestMatchs) => {
         repository.update(animeFounded).catch(console.error)
 
         return animeFounded
+    } else if (bestMatchsDB.length == 0 && matchFromExternal[0].similarity > 0.95) {
+        console.log('criando novo anime...')
+        const savedAnime = await repository.create(anime).catch(console.error)
+
+        return savedAnime
     } else {
         console.log('Match não encontrado... ', query)
 

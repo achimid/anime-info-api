@@ -12,7 +12,7 @@ const search = async (query) => {
     // integrationService.process(query)
 
     const animesFound = await repository.queryByNames(query)
-    if (animesFound.length > 0) return animesFound
+    if (animesFound.length > 0) return sortBestMatch(query, animesFound)
 
     const bestMatchs = searchSimilarityName(query, [...repository.getAllNames()])
 
@@ -25,6 +25,29 @@ const search = async (query) => {
     }
 
     return []
+}
+
+const sortBestMatch = (query, animesFound) => {
+    const animesAndSimilarities = animesFound.map(anime => {
+        const similarities = anime.names.map((name) => stringSimilarity.compareTwoStrings(query.toUpperCase(), name.toUpperCase()))
+        similarities.sort((a, b) => {
+            if (a.similarity < b.similarity) return 1;
+            if (a.similarity > b.similarity) return -1;
+            return 0;
+        })
+        return {
+            anime,
+            similarity: similarities[0]
+        }
+    })
+
+    animesAndSimilarities.sort((a, b) => {
+        if (a.similarity < b.similarity) return 1;
+        if (a.similarity > b.similarity) return -1;
+        return 0;
+    })
+
+    return animesAndSimilarities.map(a => a.anime)
 }
 
 const improveFutureSearchName = async (animesBestMatchFound, possibleName) => {
@@ -137,6 +160,7 @@ module.exports = {
     search,
     findById,
     listAllNames,
+    sortBestMatch,
     searchSimilarityName,
     searchStrategySimple
 }
