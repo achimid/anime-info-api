@@ -73,7 +73,7 @@ const findOrCreateFromBestMatch = async (query, bestMatchs) => {
         repository.update(animeFounded).catch(console.error)
 
         return animeFounded
-    } else if (bestMatchsDB.length == 0 && matchFromExternal[0].similarity > 0.95) {
+    } else if (bestMatchsDB.length == 0 && matchFromExternal.length > 0 && matchFromExternal[0].similarity > 0.95) {
         console.log('criando novo anime...')
         const savedAnime = await repository.create(anime).catch(console.error)
 
