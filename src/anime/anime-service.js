@@ -14,9 +14,6 @@ const search = async (query = '') => {
     const animesFound = await repository.queryByNames(query)
     if (animesFound.length > 0) return sortBestMatch(query, animesFound)
 
-    // const animesFoundSynonyms = await repository.queryBySynonyms(query)
-    // if (animesFoundSynonyms.length > 0) return animesFoundSynonyms
-
     const bestMatchs = searchSimilarityName(query, [...repository.getAllNames()])
 
     if (bestMatchs.length > 0) {

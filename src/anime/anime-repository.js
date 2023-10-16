@@ -13,7 +13,8 @@ const findByName = (name) => Anime.find({name})
 const queryByNames = async (query) => {
     const animes = await Anime.find({$or: [
         { 'names': { $regex: escapeQuery(query), $options: 'i' }},
-        { 'name': query}
+        { 'name': { $regex: escapeQuery(query), $options: 'i' }},
+        { 'synonyms': { $regex: escapeQuery(query), $options: 'i' }}
     ]})
     
     return animes
